@@ -1,3 +1,12 @@
+# These cheatsheets were downloaded from
+# https://github.com/chrisallenlane/cheat/tree/master/cheat/cheatsheets
+
+# I'll add a feature so we can pull updated sheets from chris's repo
+
+cheatsheets/
+
+################################################# Standard Go .gitignore
+
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o
 *.a
