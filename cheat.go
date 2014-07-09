@@ -12,7 +12,7 @@ import (
     "strings"
 )
 
-const version string = "0.2"
+const version string = "0.3"
 
 // These settings will be stored in a json once we get to that point.
 const cheatdir string = "cheatsheets"
@@ -33,6 +33,10 @@ func main() {
 }
 
 func mainCmd(c *cli.Context) {
+    // Read settings
+    config := &JSONData{}
+    config.ReadConfig()
+
     if !c.Args().Present() {
         cli.ShowAppHelp(c)
     } else {
