@@ -37,33 +37,44 @@ func mainCmd(c *cli.Context) {
         cli.ShowAppHelp(c)
     } else {
         var cmdname = os.Args[1]
-        var cheatfile = path.Join(cheatdir, cmdname)
 
         if _, err := os.Stat(cheatfile); os.IsNotExist(err) {
             fmt.Fprintf(os.Stderr, "No cheatsheat found for '%s'\n", cmdname)
             fmt.Fprintf(os.Stderr, "To create a new sheet, run: cheat -e %s\n", cmdname)
             os.Exit(1)
         } else {
-            file, _ := os.Open(cheatfile)
-            scanner := bufio.NewScanner(file)
+            var cheatfile = path.Join(cheatdir, cmdname)
 
-            var i = 1
-            for scanner.Scan() {
-                line := strings.Trim(scanner.Text(), " ")
-
-                // Pretty print the output
-                // Todo: Will have to be tested on other platforms and terminals.
-
-                if strings.HasPrefix(line, "#") {
-                    fmt.Println("\x1b[33;1m" + line + "\x1b[0m")
-                } else if strings.HasPrefix(line, cmdname) {
-                    fmt.Println("\x1b[36;1m(" + strconv.Itoa(i) + ")\x1b[0m " + line)
-                    i++
-                } else {
-                    fmt.Println(line)
-                }
+            if _, err := os.Stat(cheatfile); os.IsNotExist(err) {
+                fmt.Fprintf(os.Stderr, "No cheatsheat found for '%s'\n", cmdname)
+                fmt.Fprintf(os.Stderr, "To create a new sheet, run: cheat -e %s\n", cmdname)
+                os.Exit(1)
+            } else {
+                showCheats(cheatfile, cmdname)
             }
-            file.Close()
         }
     }
+}
+
+func showCheats(cheatfile string, cmdname string) {
+    file, _ := os.Open(cheatfile)
+    scanner := bufio.NewScanner(file)
+
+    var i = 1
+    for scanner.Scan() {
+        line := strings.Trim(scanner.Text(), " ")
+
+        // Pretty print the output
+        // Todo: Will have to be tested on other platforms and terminals.
+
+        if strings.HasPrefix(line, "#") {
+            fmt.Println("\x1b[33;1m" + line + "\x1b[0m")
+        } else if strings.HasPrefix(line, cmdname) {
+            fmt.Println("\x1b[36;1m(" + strconv.Itoa(i) + ")\x1b[0m " + line)
+            i++
+        } else {
+            fmt.Println(line)
+        }
+    }
+    file.Close()
 }
