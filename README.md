@@ -1,10 +1,10 @@
 # cheat
 
+*Status: Up for grabs. I would really love to see this created but am busy with other stuff :( If you are interested in learning Go and want to do this, ping me! I'll help you get started.*
+
 Reimplementation of [Chris Lane's cheatsheet](https://github.com/chrisallenlane/cheat) script in [Go](http://golang.org/). 
 
 I'm mostly doing this as a means of learning Go as it seemed like a nice first project to start with. 
-
-I'll update the readme with more fodder later.
 
 # Todo
 
@@ -27,6 +27,11 @@ I'll update the readme with more fodder later.
 * Update cheat sheets from chris' repo, `cheat --update` for updating it the safe way, and `cheat --update --force` for overwriting all the cheats with the downloaded version.
 
 * Should grep support be added? or can that be achived by `grep`ping things?
+
+# Far Future
+
+* Add support for bro pages
+* A complete client for http://www.commandlinefu.com/site/api
 
 # Shout outs
 
