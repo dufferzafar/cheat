@@ -6,7 +6,9 @@ import (
     "bufio"
     "fmt"
     "github.com/codegangsta/cli"
+    "io/ioutil"
     "os"
+    "os/exec"
     "path"
     "strconv"
     "strings"
@@ -29,6 +31,10 @@ func main() {
 
     app.Action = mainCmd
 
+    app.Flags = []cli.Flag{
+        cli.BoolFlag{"edit, e", "edit a cheatsheet"},
+    }
+
     app.Run(os.Args)
 }
 
@@ -40,15 +46,12 @@ func mainCmd(c *cli.Context) {
     if !c.Args().Present() {
         cli.ShowAppHelp(c)
     } else {
-        var cmdname = os.Args[1]
+        var cmdname = c.Args().First()
+        var cheatfile = path.Join(cheatdir, cmdname)
 
-        if _, err := os.Stat(cheatfile); os.IsNotExist(err) {
-            fmt.Fprintf(os.Stderr, "No cheatsheat found for '%s'\n", cmdname)
-            fmt.Fprintf(os.Stderr, "To create a new sheet, run: cheat -e %s\n", cmdname)
-            os.Exit(1)
+        if c.Bool("edit") {
+            editCheat(cheatfile, config.Editor)
         } else {
-            var cheatfile = path.Join(cheatdir, cmdname)
-
             if _, err := os.Stat(cheatfile); os.IsNotExist(err) {
                 fmt.Fprintf(os.Stderr, "No cheatsheat found for '%s'\n", cmdname)
                 fmt.Fprintf(os.Stderr, "To create a new sheet, run: cheat -e %s\n", cmdname)
@@ -81,4 +84,18 @@ func showCheats(cheatfile string, cmdname string) {
         }
     }
     file.Close()
+}
+
+func editCheat(cheatfile string, configEditor string) {
+    editor, err := exec.LookPath(configEditor)
+
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Editor not found: %s", editor)
+    }
+
+    cmd := exec.Command(editor, cheatfile)
+    cmd.Stdout = os.Stdout
+    cmd.Stdin = os.Stdin
+    cmd.Stderr = os.Stderr
+    cmd.Run()
 }
