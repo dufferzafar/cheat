@@ -33,6 +33,20 @@ I'm mostly doing this as a means of learning Go as it seemed like a nice first p
 * Add support for bro pages
 * A complete client for http://www.commandlinefu.com/site/api
 
-# Shout outs
+# Prior Art
 
-Thanks to [Chris Lane](http://github.com/chrisallenlane/) for creating cheat, and to [Jahendrie](https://github.com/jahendrie/) and [Lucas Werkmeister](https://github.com/lucaswerkmeister) for writing their own personal versions of cheat (I've stolen most of the features from them.)
+* [/chrisallenlane/cheat](http://github.com/chrisallenlane/cheat) in Python
+* [/jahendrie/cheat](https://github.com/jahendrie/cheat) in Bash
+* [/lucaswerkmeister/cheats](https://github.com/lucaswerkmeister/cheats) in Bash
+* [/defunkt/cheat](https://github.com/defunkt/) in Ruby
+* [/torsten/cheat](https://github.com/torsten/cheat) in Ruby (single file)
+* [/arthurnn/cheatly](https://github.com/arthurnn/cheatly) in Ruby
+
+<!--
+
+Markdown Cheatsheets - https://github.com/rstacruz/cheatsheets
+Kapeli's Sheets - https://github.com/Kapeli/cheatsheets
+Git Cheat - https://github.com/0xAX/git-cheat
+More Sheets - https://github.com/Dmitrii-I/cheat
+
+-->
