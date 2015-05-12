@@ -5,6 +5,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/atotto/clipboard"
 	"github.com/codegangsta/cli"
 	"io/ioutil"
 	"os"
@@ -67,9 +68,39 @@ func main() {
 				editCheat(cheatfile, config.Editor)
 			},
 		},
+		{
+			Name:  "copy",
+			Usage: "Copy a cheat",
+			Action: func(c *cli.Context) {
+				var cmdname = c.Args().First()
+				var cheatfile = path.Join(cheatdir, cmdname)
+				copyCheat(cheatfile, cmdname, c.Args()[1])
+			},
+		},
 	}
 
 	app.Run(os.Args)
+}
+
+func copyCheat(cheatfile string, cmdname string, cheatno string) {
+	file, _ := os.Open(cheatfile)
+	scanner := bufio.NewScanner(file)
+
+	var i = 0
+	for scanner.Scan() {
+		line := strings.Trim(scanner.Text(), " ")
+
+		if strings.HasPrefix(line, cmdname) {
+			i++
+		}
+
+		if strconv.Itoa(i) == cheatno {
+			clipboard.WriteAll(line)
+			fmt.Println("\x1b[32;5m" + "Copied to Clipboard: " + "\x1b[0m" + line)
+			break
+		}
+	}
+	file.Close()
 }
 
 func showCheats(cheatfile string, cmdname string) {
