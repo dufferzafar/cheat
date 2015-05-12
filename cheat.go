@@ -15,10 +15,10 @@ import (
 	"strings"
 )
 
-const version string = "0.3"
+const version string = "0.5"
 
 // These settings will be stored in a json once we get to that point.
-const cheatdir string = "cheatsheets"
+const cheatdir string = "/mnt/Work/Github/cheat/cheatsheets"
 
 func main() {
 	app := cli.NewApp()
@@ -35,8 +35,15 @@ func main() {
 
 	app.Commands = []cli.Command{
 		{
-			Name:  "show",
-			Usage: "Show cheats related to a command",
+			Name:    "show",
+			Aliases: []string{"s"},
+			Usage:   "Show cheats related to a command",
+			Flags: []cli.Flag{
+				cli.IntFlag{
+					Name:  "copy, c",
+					Usage: "cheat number to copy",
+				},
+			},
 			Action: func(c *cli.Context) {
 				var cmdname = c.Args().First()
 				var cheatfile = path.Join(cheatdir, cmdname)
@@ -46,13 +53,27 @@ func main() {
 					fmt.Fprintf(os.Stderr, "To create a new sheet, run: cheat edit %s\n", cmdname)
 					os.Exit(1)
 				} else {
-					showCheats(cheatfile, cmdname)
+					if c.Int("copy") != 0 {
+						copyCheat(cheatfile, cmdname, c.Int("copy"))
+					} else {
+						showCheats(cheatfile, cmdname)
+					}
 				}
 			},
 		},
 		{
-			Name:  "list",
-			Usage: "List all available cheats",
+			Name:    "edit",
+			Aliases: []string{"e"},
+			Usage:   "Add/Edit a cheat",
+			Action: func(c *cli.Context) {
+				var cheatfile = path.Join(cheatdir, c.Args().First())
+				editCheat(cheatfile, config.Editor)
+			},
+		},
+		{
+			Name:    "list",
+			Aliases: []string{"l"},
+			Usage:   "List all available cheats",
 			Action: func(c *cli.Context) {
 				files, _ := ioutil.ReadDir(cheatdir)
 				for _, f := range files {
@@ -60,29 +81,12 @@ func main() {
 				}
 			},
 		},
-		{
-			Name:  "edit",
-			Usage: "Add/Edit a cheat",
-			Action: func(c *cli.Context) {
-				var cheatfile = path.Join(cheatdir, c.Args().First())
-				editCheat(cheatfile, config.Editor)
-			},
-		},
-		{
-			Name:  "copy",
-			Usage: "Copy a cheat",
-			Action: func(c *cli.Context) {
-				var cmdname = c.Args().First()
-				var cheatfile = path.Join(cheatdir, cmdname)
-				copyCheat(cheatfile, cmdname, c.Args()[1])
-			},
-		},
 	}
 
 	app.Run(os.Args)
 }
 
-func copyCheat(cheatfile string, cmdname string, cheatno string) {
+func copyCheat(cheatfile string, cmdname string, cheatno int) {
 	file, _ := os.Open(cheatfile)
 	scanner := bufio.NewScanner(file)
 
@@ -94,7 +98,7 @@ func copyCheat(cheatfile string, cmdname string, cheatno string) {
 			i++
 		}
 
-		if strconv.Itoa(i) == cheatno {
+		if cheatno == i {
 			clipboard.WriteAll(line)
 			fmt.Println("\x1b[32;5m" + "Copied to Clipboard: " + "\x1b[0m" + line)
 			break

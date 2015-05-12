@@ -6,7 +6,7 @@ var AppHelpTemplate = `{{.Name}} - {{.Usage}}
 Version: {{.Version}}
 
 Usage:
-    {{.Name}} [global options] [cheatsheet] <command> [<args>]
+    {{.Name}} <command> [cheatsheet] [<args>]
 
 
 Commands:
@@ -18,7 +18,8 @@ Global Options:
     {{end}}
 
 Examples:
-    {{.Name}} git           Shows git cheatsheet
+    {{.Name}} show git              Shows git cheatsheet
+    {{.Name}} show git -c 12        Copy the 12th git cheat
 
-    {{.Name}} -e at         Create a new cheatsheet named at
+    {{.Name}} edit at               Edit cheatsheet named at
 `
