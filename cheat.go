@@ -10,15 +10,13 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"os/user"
 	"path"
 	"strconv"
 	"strings"
 )
 
 const version string = "0.5"
-
-// These settings will be stored in a json once we get to that point.
-const cheatdir string = "/mnt/Work/Github/cheat/cheatsheets"
 
 func main() {
 	app := cli.NewApp()
@@ -46,10 +44,10 @@ func main() {
 			},
 			Action: func(c *cli.Context) {
 				var cmdname = c.Args().First()
-				var cheatfile = path.Join(cheatdir, cmdname)
+				var cheatfile = path.Join(config.Cheatdirs[0], cmdname)
 
 				if _, err := os.Stat(cheatfile); os.IsNotExist(err) {
-					fmt.Fprintf(os.Stderr, "No cheatsheat found for '%s'\n", cmdname)
+					fmt.Fprintf(os.Stderr, "No cheatsheet found for '%s'\n", cmdname)
 					fmt.Fprintf(os.Stderr, "To create a new sheet, run: cheat edit %s\n", cmdname)
 					os.Exit(1)
 				} else {
@@ -66,7 +64,7 @@ func main() {
 			Aliases: []string{"e"},
 			Usage:   "Add/Edit a cheat",
 			Action: func(c *cli.Context) {
-				var cheatfile = path.Join(cheatdir, c.Args().First())
+				var cheatfile = path.Join(config.Cheatdirs[0], c.Args().First())
 				editCheat(cheatfile, config.Editor)
 			},
 		},
@@ -75,10 +73,19 @@ func main() {
 			Aliases: []string{"l"},
 			Usage:   "List all available cheats",
 			Action: func(c *cli.Context) {
-				files, _ := ioutil.ReadDir(cheatdir)
+				files, _ := ioutil.ReadDir(config.Cheatdirs[0])
 				for _, f := range files {
 					fmt.Println(f.Name())
 				}
+			},
+		},
+		{
+			Name:    "config",
+			Usage:   "Edit the config file",
+			Action: func(c *cli.Context) {
+				usr, _ := user.Current()
+				rcfile := path.Join(usr.HomeDir, ".cheatrc")
+				editCheat(rcfile, config.Editor)
 			},
 		},
 	}
