@@ -1,26 +1,35 @@
 # cheat
 
-*Status: Up for grabs. I would really love to see this created but am busy with other stuff :( If you are interested in learning Go and want to do this, ping me! I'll help you get started.*
+*Status: A very basic working version. Will improve when I can find some time.*
 
 Reimplementation of [Chris Lane's cheatsheet](https://github.com/chrisallenlane/cheat) script in [Go](http://golang.org/). 
 
 I'm mostly doing this as a means of learning Go as it seemed like a nice first project to start with. 
 
+# Install
+
+I guess this would work!
+
+`go get github.com/dufferzafar/cheat`
+
+# Usage
+
+`~/.cheatrc` - A JSON based config file which stores basic configuration.
+
+`cheat show git` - Show the git cheatsheet
+
+`cheat edit git` - Edit the git sheet. A new one will be created if it doesn't already exist.
+
+`cheat show git --copy 12` - Copy the 12th cheat from the sheet
+
 # Todo
 
+* Allow multiple cheat directories
 * Colors on the AppHelpTemplate.
 
-* Edit cheatsheets `cheat --edit git`, if the file does not exist, it is created, also create the dir.
+* Or execute a command by, `cheat git 12` ?
 
-* Copy commands to clipboard, something like `cheat git 12 --copy`
-* Or execute a command by, `cheat git 12`
-
-* Allow multiple cheat directories
 * User's favorite editor, with support for command line parameters.
-* Open the `.cheatrc` for editing via `cheat --config`
-* Store all settings in a json file `.cheatrc` in user's home directory.
-
-* List all available sheets. `cheat --list`
 
 * Wrap the output to a fit width? like 79 characters?
 
