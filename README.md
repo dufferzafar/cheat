@@ -6,6 +6,8 @@ Reimplementation of [Chris Lane's cheatsheet](https://github.com/chrisallenlane/
 
 I'm mostly doing this as a means of learning Go as it seemed like a nice first project to start with. 
 
+![Screenshot](screenshot.png)
+
 # Install
 
 I guess this would work!
@@ -23,6 +25,8 @@ I guess this would work!
 `cheat show git --copy 12` - Copy the 12th cheat from the sheet
 
 # Todo
+
+* Find a way of using all the sheets from chris's repo, along with stuff that I've added.
 
 * Allow multiple cheat directories
 * Colors on the AppHelpTemplate.
