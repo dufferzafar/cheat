@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/atotto/clipboard"
 	"github.com/codegangsta/cli"
+	"github.com/mattn/go-colorable"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -121,6 +122,7 @@ func copyCheat(cheatfile string, cmdname string, cheatno int) {
 func showCheats(cheatfile string, cmdname string) {
 	file, _ := os.Open(cheatfile)
 	scanner := bufio.NewScanner(file)
+	out := colorable.NewColorableStdout()
 
 	var i = 1
 	for scanner.Scan() {
@@ -130,12 +132,12 @@ func showCheats(cheatfile string, cmdname string) {
 		// Todo: Will have to be tested on other platforms and terminals.
 
 		if strings.HasPrefix(line, "#") {
-			fmt.Println("\x1b[33;5m" + line + "\x1b[0m")
+			fmt.Fprintln(out, "\x1b[33;5m"+line+"\x1b[0m")
 		} else if strings.HasPrefix(line, cmdname) {
-			fmt.Println("\x1b[36;5m(" + strconv.Itoa(i) + ")\x1b[0m " + line)
+			fmt.Fprintln(out, "\x1b[36;5m("+strconv.Itoa(i)+")\x1b[0m "+line)
 			i++
 		} else {
-			fmt.Println(line)
+			fmt.Fprintln(out, line)
 		}
 	}
 	file.Close()
