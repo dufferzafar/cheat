@@ -80,8 +80,8 @@ func main() {
 			},
 		},
 		{
-			Name:    "config",
-			Usage:   "Edit the config file",
+			Name:  "config",
+			Usage: "Edit the config file",
 			Action: func(c *cli.Context) {
 				usr, _ := user.Current()
 				rcfile := path.Join(usr.HomeDir, ".cheatrc")
