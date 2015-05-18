@@ -1,18 +1,16 @@
 # cheat
 
-*Status: A very basic working version. Will improve when I can find some time.*
-
 Reimplementation of [Chris Lane's cheatsheet](https://github.com/chrisallenlane/cheat) script in [Go](http://golang.org/). 
 
 I'm mostly doing this as a means of learning Go as it seemed like a nice first project to start with. 
 
 ![Screenshot](screenshot.png)
 
-# Install
-
-I guess this would work!
+# Setup
 
 `go get github.com/dufferzafar/cheat`
+
+For now, you need to [download the actual cheatsheets](https://github.com/chrisallenlane/cheat/tree/master/cheat/cheatsheets) from Chris's repo. Put them in `~/.cheatsheets` folder. A future version will have a command that'll do this ;)
 
 # Usage
 
@@ -26,9 +24,11 @@ I guess this would work!
 
 # Todo
 
+* Allow multiple cheat directories
+* `cheat fetch` command to fetch all the cheatsheets from a repo.
+
 * Find a way of using all the sheets from chris's repo, along with stuff that I've added.
 
-* Allow multiple cheat directories
 * Colors on the AppHelpTemplate.
 
 * Or execute a command by, `cheat git 12` ?
