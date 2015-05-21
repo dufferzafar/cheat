@@ -8,6 +8,7 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/codegangsta/cli"
 	"github.com/mattn/go-colorable"
+	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -36,6 +37,8 @@ func main() {
 
 	config := &JSONData{}
 	config.ReadConfig()
+
+	cheatsDirectory := path.Join(os.Getenv("HOME"), "/.cheatsheets")
 
 	app.Commands = []cli.Command{
 		{
@@ -92,6 +95,25 @@ func main() {
 				usr, _ := user.Current()
 				rcfile := filepath.Join(usr.HomeDir, ".cheatrc")
 				editCheat(rcfile, config.Editor)
+			},
+		},
+		{
+			Name:  "download",
+			Usage: "Download cheats",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "dir, d",
+					Value: cheatsDirectory,
+					Usage: fmt.Sprintf("cheats directory (default: %s)", cheatsDirectory),
+				},
+				cli.BoolFlag{
+					Name: "verbose, v",
+				},
+			},
+			Action: func(c *cli.Context) {
+				url := "https://github.com/jahendrie/cheat"
+				exitCode := download(url, c.String("dir"), c.Bool("verbose"))
+				os.Exit(exitCode)
 			},
 		},
 	}
@@ -158,4 +180,75 @@ func editCheat(cheatfile string, configEditor string) {
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	cmd.Run()
+}
+
+func download(url string, cheatsDir string, verbose bool) int {
+	cloneDir, err := ioutil.TempDir(os.TempDir(), "cheat")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return 1
+	}
+
+	defer func() {
+		if verbose {
+			fmt.Fprintf(os.Stderr, "Removing temporary directory: %s\n", cloneDir)
+		}
+		os.RemoveAll(cloneDir)
+	}()
+
+	if runGitClone(url, cloneDir, verbose) != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return 1
+	}
+
+	if copyCheatFiles(path.Join(cloneDir, "data"), cheatsDir) != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return 1
+	}
+
+	return 0
+}
+
+func runGitClone(url, dir string, verbose bool) error {
+	cmd := exec.Command("git", "clone", url, dir)
+	if verbose {
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+	}
+	return cmd.Run()
+}
+
+func copyCheatFiles(cloneDir, cheatsDir string) error {
+	files, err := ioutil.ReadDir(cloneDir)
+	if err != nil {
+		return err
+	}
+
+	for _, f := range files {
+		err := copyFile(path.Join(cloneDir, f.Name()), path.Join(cheatsDir, f.Name()))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func copyFile(src, dst string) error {
+	s, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer s.Close()
+
+	d, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	if _, err := io.Copy(d, s); err != nil {
+		d.Close()
+		return err
+	}
+
+	return d.Close()
 }
