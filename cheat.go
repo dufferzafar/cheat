@@ -38,8 +38,6 @@ func main() {
 	config := &JSONData{}
 	config.ReadConfig()
 
-	cheatsDirectory := path.Join(os.Getenv("HOME"), "/.cheatsheets")
-
 	app.Commands = []cli.Command{
 		{
 			Name:    "show",
@@ -103,8 +101,8 @@ func main() {
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "dir, d",
-					Value: cheatsDirectory,
-					Usage: fmt.Sprintf("cheats directory (default: %s)", cheatsDirectory),
+					Value: config.Cheatdirs[0],
+					Usage: fmt.Sprintf("cheats directory (default: %s)", config.Cheatdirs[0]),
 				},
 				cli.BoolFlag{
 					Name: "verbose, v",
