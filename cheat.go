@@ -110,7 +110,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) {
 				url := "https://github.com/chrisallenlane/cheat"
-				exitCode := download(url, c.String("dir"), c.Bool("verbose"))
+				exitCode := fetchCheats(url, c.String("dir"), c.Bool("verbose"))
 				os.Exit(exitCode)
 			},
 		},
@@ -180,7 +180,7 @@ func editCheat(cheatfile string, configEditor string) {
 	cmd.Run()
 }
 
-func download(url string, cheatsDir string, verbose bool) int {
+func fetchCheats(url string, cheatsDir string, verbose bool) int {
 	cloneDir, err := ioutil.TempDir(os.TempDir(), "cheat")
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
