@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"os/user"
 	"path"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -106,6 +107,9 @@ func copyCheat(cheatfile string, cmdname string, cheatno int) {
 		}
 
 		if cheatno == i {
+			re := regexp.MustCompile(`([^#]*)`)
+			res := re.FindAllStringSubmatch(line, -1)
+			line = strings.Trim(res[0][0], " ")
 			clipboard.WriteAll(line)
 			fmt.Println("\x1b[32;5m" + "Copied to Clipboard: " + "\x1b[0m" + line)
 			break
