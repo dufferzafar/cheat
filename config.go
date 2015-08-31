@@ -39,5 +39,14 @@ func (q *JSONData) ReadConfig() error {
 
 	//Umarshalling JSON into struct
 	var data = &q
-	return json.Unmarshal(settings, data)
+	err := json.Unmarshal(settings, data)
+	if err != nil {
+		return err
+	}
+	for i, dir := range q.Cheatdirs {
+		if strings.HasPrefix(dir, "~/") {
+			q.Cheatdirs[i] = filepath.Join(usr.HomeDir, dir[2:])
+		}
+	}
+	return nil
 }
