@@ -11,7 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
-	"path"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -45,7 +45,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) {
 				var cmdname = c.Args().First()
-				var cheatfile = path.Join(config.Cheatdirs[0], cmdname)
+				var cheatfile = filepath.Join(config.Cheatdirs[0], cmdname)
 
 				if _, err := os.Stat(cheatfile); os.IsNotExist(err) {
 					fmt.Fprintf(os.Stderr, "No cheatsheet found for '%s'\n", cmdname)
@@ -65,7 +65,7 @@ func main() {
 			Aliases: []string{"e"},
 			Usage:   "Add/Edit a cheat",
 			Action: func(c *cli.Context) {
-				var cheatfile = path.Join(config.Cheatdirs[0], c.Args().First())
+				var cheatfile = filepath.Join(config.Cheatdirs[0], c.Args().First())
 				editCheat(cheatfile, config.Editor)
 			},
 		},
@@ -85,7 +85,7 @@ func main() {
 			Usage: "Edit the config file",
 			Action: func(c *cli.Context) {
 				usr, _ := user.Current()
-				rcfile := path.Join(usr.HomeDir, ".cheatrc")
+				rcfile := filepath.Join(usr.HomeDir, ".cheatrc")
 				editCheat(rcfile, config.Editor)
 			},
 		},

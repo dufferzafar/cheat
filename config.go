@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/user"
-	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -27,7 +27,7 @@ var defaults = `{
 
 func (q *JSONData) ReadConfig() error {
 	usr, _ := user.Current()
-	rcfile := path.Join(usr.HomeDir, ".cheatrc")
+	rcfile := filepath.Join(usr.HomeDir, ".cheatrc")
 
 	settings := []byte(defaults)
 	if _, err := os.Stat(rcfile); os.IsNotExist(err) {
