@@ -20,6 +20,10 @@ import (
 
 const version string = "0.5"
 
+var (
+	stdout = colorable.NewColorableStdout()
+)
+
 func main() {
 	app := cli.NewApp()
 
@@ -112,7 +116,7 @@ func copyCheat(cheatfile string, cmdname string, cheatno int) {
 			res := re.FindAllStringSubmatch(line, -1)
 			line = strings.Trim(res[0][0], " ")
 			clipboard.WriteAll(line)
-			fmt.Println("\x1b[32;5m" + "Copied to Clipboard: " + "\x1b[0m" + line)
+			fmt.Fprintln(stdout, "\x1b[32;5m"+"Copied to Clipboard: "+"\x1b[0m"+line)
 			break
 		}
 	}
@@ -122,7 +126,6 @@ func copyCheat(cheatfile string, cmdname string, cheatno int) {
 func showCheats(cheatfile string, cmdname string) {
 	file, _ := os.Open(cheatfile)
 	scanner := bufio.NewScanner(file)
-	out := colorable.NewColorableStdout()
 
 	var i = 1
 	for scanner.Scan() {
@@ -132,12 +135,12 @@ func showCheats(cheatfile string, cmdname string) {
 		// Todo: Will have to be tested on other platforms and terminals.
 
 		if strings.HasPrefix(line, "#") {
-			fmt.Fprintln(out, "\x1b[33;5m"+line+"\x1b[0m")
+			fmt.Fprintln(stdout, "\x1b[33;5m"+line+"\x1b[0m")
 		} else if strings.HasPrefix(line, cmdname) {
-			fmt.Fprintln(out, "\x1b[36;5m("+strconv.Itoa(i)+")\x1b[0m "+line)
+			fmt.Fprintln(stdout, "\x1b[36;5m("+strconv.Itoa(i)+")\x1b[0m "+line)
 			i++
 		} else {
-			fmt.Fprintln(out, line)
+			fmt.Fprintln(stdout, line)
 		}
 	}
 	file.Close()
