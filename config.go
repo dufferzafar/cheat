@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/user"
-	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -20,18 +20,17 @@ var defaults = `{
     "highlight": true,
     "linewrap": 79,
     "cheatdirs": [
-        "$HomeDir/.cheatsheets"
+        "~/.cheatsheets"
     ],
     "editor": "vim"
 }`
 
 func (q *JSONData) ReadConfig() error {
 	usr, _ := user.Current()
-	rcfile := path.Join(usr.HomeDir, ".cheatrc")
+	rcfile := filepath.Join(usr.HomeDir, ".cheatrc")
 
 	settings := []byte(defaults)
 	if _, err := os.Stat(rcfile); os.IsNotExist(err) {
-		defaults = strings.Replace(defaults, "$HomeDir", usr.HomeDir, 1)
 		ioutil.WriteFile(rcfile, []byte(defaults), 0777)
 	} else {
 		settings, _ = ioutil.ReadFile(rcfile)
@@ -39,5 +38,14 @@ func (q *JSONData) ReadConfig() error {
 
 	//Umarshalling JSON into struct
 	var data = &q
-	return json.Unmarshal(settings, data)
+	err := json.Unmarshal(settings, data)
+	if err != nil {
+		return err
+	}
+	for i, dir := range q.Cheatdirs {
+		if strings.HasPrefix(dir, "~/") {
+			q.Cheatdirs[i] = filepath.Join(usr.HomeDir, dir[2:])
+		}
+	}
+	return nil
 }

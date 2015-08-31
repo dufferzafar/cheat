@@ -7,17 +7,22 @@ import (
 	"fmt"
 	"github.com/atotto/clipboard"
 	"github.com/codegangsta/cli"
+	"github.com/mattn/go-colorable"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"os/user"
-	"path"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
 const version string = "0.5"
+
+var (
+	stdout = colorable.NewColorableStdout()
+)
 
 func main() {
 	app := cli.NewApp()
@@ -45,7 +50,7 @@ func main() {
 			},
 			Action: func(c *cli.Context) {
 				var cmdname = c.Args().First()
-				var cheatfile = path.Join(config.Cheatdirs[0], cmdname)
+				var cheatfile = filepath.Join(config.Cheatdirs[0], cmdname)
 
 				if _, err := os.Stat(cheatfile); os.IsNotExist(err) {
 					fmt.Fprintf(os.Stderr, "No cheatsheet found for '%s'\n", cmdname)
@@ -65,7 +70,7 @@ func main() {
 			Aliases: []string{"e"},
 			Usage:   "Add/Edit a cheat",
 			Action: func(c *cli.Context) {
-				var cheatfile = path.Join(config.Cheatdirs[0], c.Args().First())
+				var cheatfile = filepath.Join(config.Cheatdirs[0], c.Args().First())
 				editCheat(cheatfile, config.Editor)
 			},
 		},
@@ -85,7 +90,7 @@ func main() {
 			Usage: "Edit the config file",
 			Action: func(c *cli.Context) {
 				usr, _ := user.Current()
-				rcfile := path.Join(usr.HomeDir, ".cheatrc")
+				rcfile := filepath.Join(usr.HomeDir, ".cheatrc")
 				editCheat(rcfile, config.Editor)
 			},
 		},
@@ -111,7 +116,7 @@ func copyCheat(cheatfile string, cmdname string, cheatno int) {
 			res := re.FindAllStringSubmatch(line, -1)
 			line = strings.Trim(res[0][0], " ")
 			clipboard.WriteAll(line)
-			fmt.Println("\x1b[32;5m" + "Copied to Clipboard: " + "\x1b[0m" + line)
+			fmt.Fprintln(stdout, "\x1b[32;5m"+"Copied to Clipboard: "+"\x1b[0m"+line)
 			break
 		}
 	}
@@ -130,12 +135,12 @@ func showCheats(cheatfile string, cmdname string) {
 		// Todo: Will have to be tested on other platforms and terminals.
 
 		if strings.HasPrefix(line, "#") {
-			fmt.Println("\x1b[33;5m" + line + "\x1b[0m")
+			fmt.Fprintln(stdout, "\x1b[33;5m"+line+"\x1b[0m")
 		} else if strings.HasPrefix(line, cmdname) {
-			fmt.Println("\x1b[36;5m(" + strconv.Itoa(i) + ")\x1b[0m " + line)
+			fmt.Fprintln(stdout, "\x1b[36;5m("+strconv.Itoa(i)+")\x1b[0m "+line)
 			i++
 		} else {
-			fmt.Println(line)
+			fmt.Fprintln(stdout, line)
 		}
 	}
 	file.Close()
