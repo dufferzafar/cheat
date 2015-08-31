@@ -212,7 +212,7 @@ func fetchCheats(c *cli.Context) {
 	if c.String("local") != "" {
 		cloneDir = c.String("local")
 	} else if os.Getenv("GOPATH") != "" {
-		cloneDir = path.Join(os.Getenv("GOPATH"), "src", repo.Host, repoPath[1], repoPath[2])
+		cloneDir = filepath.Join(os.Getenv("GOPATH"), "src", repo.Host, repoPath[1], repoPath[2])
 	}
 
 	// update the repo
@@ -226,7 +226,7 @@ func fetchCheats(c *cli.Context) {
 	if updated {
 		srcPath := cloneDir
 		for _, p := range cheatsPath {
-			srcPath = path.Join(srcPath, p)
+			srcPath = filepath.Join(srcPath, p)
 		}
 
 		count, err := copyCheatFiles(srcPath, c.String("dir"))
@@ -251,7 +251,11 @@ func updateLocalRepo(url, dir string) (bool, error) {
 	} else {
 		cmd = exec.Command("git", "pull", url)
 		cmd.Dir = dir
+
 		out, err := cmd.CombinedOutput()
+		if err != nil {
+			return false, err
+		}
 
 		res := string(out)
 		fmt.Fprint(os.Stderr, res)
@@ -261,7 +265,7 @@ func updateLocalRepo(url, dir string) (bool, error) {
 			updated = false
 		}
 
-		return updated, err
+		return updated, nil
 	}
 }
 
@@ -282,7 +286,7 @@ func copyCheatFiles(cloneDir, cheatsDir string) (int, error) {
 	for _, f := range files {
 		count += 1
 
-		err := copyFile(path.Join(cloneDir, f.Name()), path.Join(cheatsDir, f.Name()))
+		err := copyFile(filepath.Join(cloneDir, f.Name()), filepath.Join(cheatsDir, f.Name()))
 		if err != nil {
 			return count, err
 		}
@@ -302,10 +306,11 @@ func copyFile(src, dst string) error {
 	if err != nil {
 		return err
 	}
+	defer d.Close()
+
 	if _, err := io.Copy(d, s); err != nil {
-		d.Close()
 		return err
 	}
 
-	return d.Close()
+	return nil
 }
