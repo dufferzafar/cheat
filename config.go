@@ -20,7 +20,7 @@ var defaults = `{
     "highlight": true,
     "linewrap": 79,
     "cheatdirs": [
-        "$HomeDir/.cheatsheets"
+        "~/.cheatsheets"
     ],
     "editor": "vim"
 }`
@@ -31,7 +31,6 @@ func (q *JSONData) ReadConfig() error {
 
 	settings := []byte(defaults)
 	if _, err := os.Stat(rcfile); os.IsNotExist(err) {
-		defaults = strings.Replace(defaults, "$HomeDir", usr.HomeDir, 1)
 		ioutil.WriteFile(rcfile, []byte(defaults), 0777)
 	} else {
 		settings, _ = ioutil.ReadFile(rcfile)
