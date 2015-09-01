@@ -135,7 +135,7 @@ func copyCheat(cheatfile string, cmdname string, cheatno int) {
 
 	var i = 0
 	for scanner.Scan() {
-		line := strings.Trim(scanner.Text(), " ")
+		line := strings.TrimSpace(scanner.Text())
 
 		if strings.HasPrefix(line, cmdname) {
 			i++
@@ -144,7 +144,7 @@ func copyCheat(cheatfile string, cmdname string, cheatno int) {
 		if cheatno == i {
 			re := regexp.MustCompile(`([^#]*)`)
 			res := re.FindAllStringSubmatch(line, -1)
-			line = strings.Trim(res[0][0], " ")
+			line = strings.TrimSpace(res[0][0])
 			clipboard.WriteAll(line)
 			fmt.Fprintln(stdout, "\x1b[32;5m"+"Copied to Clipboard: "+"\x1b[0m"+line)
 			break
@@ -159,7 +159,7 @@ func showCheats(cheatfile string, cmdname string) {
 
 	var i = 1
 	for scanner.Scan() {
-		line := strings.Trim(scanner.Text(), " ")
+		line := strings.TrimSpace(scanner.Text())
 
 		// Pretty print the output
 		// Todo: Will have to be tested on other platforms and terminals.
