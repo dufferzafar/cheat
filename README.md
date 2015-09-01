@@ -8,9 +8,11 @@ I'm mostly doing this as a means of learning Go as it seemed like a nice first p
 
 # Setup
 
-`go get github.com/dufferzafar/cheat`
+Install: `go get github.com/dufferzafar/cheat`
 
-For now, you need to [download the actual cheatsheets](https://github.com/chrisallenlane/cheat/tree/master/cheat/cheatsheets) from Chris's repo. Put them in `~/.cheatsheets` folder. A future version will have a command that'll do this ;)
+Fetch cheatsheets: `cheat fetch`
+
+Test: `cheat show git`
 
 # Usage
 
@@ -21,6 +23,8 @@ For now, you need to [download the actual cheatsheets](https://github.com/chrisa
 `cheat edit git` - Edit the git sheet. A new one will be created if it doesn't already exist.
 
 `cheat show git --copy 12` - Copy the 12th cheat from the sheet
+
+`cheat fetch` - When you feel like updating the sheets.
 
 # Todo
 
