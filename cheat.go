@@ -98,7 +98,7 @@ func main() {
 		},
 		{
 			Name:  "fetch",
-			Usage: "Fetch cheats",
+			Usage: "Fetch cheats from Github",
 			Flags: []cli.Flag{
 				cli.StringFlag{
 					Name:  "dir, d",
