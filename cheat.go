@@ -5,9 +5,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/atotto/clipboard"
-	"github.com/codegangsta/cli"
-	"github.com/mattn/go-colorable"
 	"io"
 	"io/ioutil"
 	"net/url"
@@ -18,6 +15,10 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/atotto/clipboard"
+	"github.com/mattn/go-colorable"
+	"github.com/urfave/cli"
 )
 
 const version string = "0.5"
